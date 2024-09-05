@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ease Platform</title>
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
+    <title> Ease Platform</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -51,7 +49,7 @@
         }
         button {
             padding: 10px;
-            background-color: #4000ff;
+            background-color:#4000ff;
             color: white;
             border: none;
             border-radius: 5px;
@@ -110,40 +108,18 @@
             <button onclick="sendMessage()">إرسال رسالة</button>
         </div>
 
-        <div class="form-group">
-            <h2>تحميل الملفات</h2>
-            <input type="file" id="fileUpload" multiple>
-            <button onclick="uploadFiles()">تحميل الملفات</button>
-        </div>
-
-        <a href="TT.HTML" class="btn btn-primary btn-lg" style="position: absolute; top: 0; right: 0; margin: 10px; padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">للتسجيل</a>
+     
     </div>
 
     <script>
-        // إعداد Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAhqwNudIwG1ffXjW3Yu_eXJY4DM59Q08s",
-            authDomain: "ease-58946.firebaseapp.com",
-            projectId: "ease-58946",
-            storageBucket: "ease-58946.appspot.com",
-            messagingSenderId: "797793182882",
-            appId: "1:797793182882:web:357e579fc4aa3b35d823fb",
-            measurementId: "G-ELBZ2MBLCC"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        async function loadStudents() {
-            const studentsSnapshot = await db.collection('students').get();
+        function loadStudents() {
+            const students = JSON.parse(localStorage.getItem('students')) || [];
             const studentSelect = document.getElementById('studentSelect');
             const studentsList = document.getElementById('studentsList');
             studentsList.innerHTML = ''; // تنظيف القائمة
             studentSelect.innerHTML = '<option value="">اختر طالباً</option>'; // تنظيف خيارات الطلاب
 
-            studentsSnapshot.forEach(doc => {
-                const student = doc.data();
+            students.forEach(student => {
                 const listItem = document.createElement('li');
                 listItem.textContent = student.name;
                 studentsList.appendChild(listItem);
@@ -155,15 +131,18 @@
             });
         }
 
-        async function sendMessage() {
+        function sendMessage() {
             const student = document.getElementById('studentSelect').value;
             const message = document.getElementById('message').value;
             if (student && message) {
-                const messagesRef = db.collection('messages').doc(student);
-                const doc = await messagesRef.get();
-                let messages = doc.exists ? doc.data().messages : [];
-                messages.push(message);
-                await messagesRef.set({ messages });
+                // تخزين الرسالة في localStorage
+                const messages = JSON.parse(localStorage.getItem('messages')) || {};
+                if (!messages[student]) {
+                    messages[student] = [];
+                }
+                messages[student].push(message);
+                localStorage.setItem('messages', JSON.stringify(messages));
+
                 alert(`تم إرسال الرسالة إلى ${student} بنجاح`);
                 document.getElementById('message').value = ''; // مسح الرسالة
             } else {
@@ -171,35 +150,32 @@
             }
         }
 
-        async function uploadFiles() {
+        function uploadFiles() {
             const files = document.getElementById('fileUpload').files;
             const student = document.getElementById('studentSelect').value;
             if (files.length > 0 && student) {
-                const storageRef = firebase.storage().ref();
-                const uploadedFilesRef = db.collection('uploadedFiles').doc(student);
-                let filePromises = [];
-                Array.from(files).forEach(file => {
-                    const fileRef = storageRef.child(`files/${student}/${file.name}`);
-                    filePromises.push(fileRef.put(file).then(() => fileRef.getDownloadURL()));
-                });
-
-                Promise.all(filePromises).then(async (urls) => {
-                    const fileNames = Array.from(files).map(file => file.name);
-                    const uploadedFilesDoc = await uploadedFilesRef.get();
-                    let uploadedFiles = uploadedFilesDoc.exists ? uploadedFilesDoc.data().files : {};
-                    fileNames.forEach((fileName, index) => {
-                        uploadedFiles[fileName] = urls[index];
-                    });
-                    await uploadedFilesRef.set({ files: uploadedFiles });
-                    alert('تم تحميل الملفات بنجاح');
-                });
+                // تخزين أسماء الملفات في localStorage
+                const fileNames = Array.from(files).map(file => file.name);
+                const uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || {};
+                if (!uploadedFiles[student]) {
+                    uploadedFiles[student] = [];
+                }
+                uploadedFiles[student] = uploadedFiles[student].concat(fileNames);
+                localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+                alert('تم تحميل الملفات بنجاح');
             } else {
                 alert('يرجى اختيار طالب وملفات لتحميلها');
             }
         }
 
+       
+        function saveAndRedirect() {
+            // حفظ البيانات إذا لزم الأمر
+            window.location.href = 'Tindex.html'; // Redirect to Tindex.html
+        }
+
         window.onload = loadStudents;
     </script>
+     <a href="TT.HTML" class="btn btn-primary btn-lg" style="position: absolute; top: 0; right: 0; margin: 10px; padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">للتسجيل</a>
 </body>
 </html>
-

@@ -1,135 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ease Platform - Student</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+    <title> Ease Platform</title>
     <style>
         body {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
             font-family: Arial, sans-serif;
+            direction: rtl;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
             max-width: 1200px;
-            margin: auto;
             padding: 20px;
+            margin: 20px;
+            text-align: center;
         }
-        .card {
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
-        }
-        .card:hover {
-            transform: scale(1.05);
-        }
-        .card img {
-            border-bottom: 2px solid #eee;
-        }
-        .card-body {
-            background: #fff;
-            padding: 20px;
-        }
-        .my-button {
-            background-color: #2575fc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
+        input[type="text"], select {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 20px;
             font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        .my-button:hover {
-            background-color: #1a64d1;
-        }
-        .btn-register {
-            background-color: #ff5722;
-            color: white;
             border-radius: 5px;
-            padding: 10px 20px;
-            text-decoration: none;
-            font-size: 18px;
-            position: fixed;
-            top: 10px;
-            right: 10px;
+            border: 1px solid #ccc;
         }
-        .btn-register:hover {
-            background-color: #e64a19;
+        button {
+            padding: 10px;
+            background-color: #4000ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #4000ff;
+        }
+        .gender-icon {
+            margin-top: 20px;
+        }
+        .gender-icon img {
+            width: 50px;
+            height: 50px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <img src="the_pictures_and_video/the_messages.jpg" alt="Messages" class="card-img-top">
-                    <div class="card-body">
-                        <a href="input_iname_of_s.html" target="_blank">
-                            <button class="my-button">الرسائل</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <img src="the pictures & video\AI IMEGE .jpg" alt="AI Tool" class="card-img-top">
-                    <div class="card-body">
-                        <a href="https://ease-platform.streamlit.app/" target="_blank">
-                            <button class="my-button">AI Tool</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <h1>تسجيل الطالب</h1>
+        <label for="studentName">الاسم:</label>
+        <input type="text" id="studentName" placeholder="أدخل اسم الطالب">
+        
+        <label for="genderSelect">الجنس:</label>
+        <select id="genderSelect">
+            <option value="">اختر الجنس</option>
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+        </select>
+        
+        <label for="subjectSelect">اختيار المادة الدراسية:</label>
+        <select id="subjectSelect">
+            <option value="">اختر المادة</option>
+            <option value="Math">رياضيات</option>
+            <option value="Science">علوم</option>
+            <option value="History">تاريخ</option>
+            <option value="English">إنجليزي</option>
+            <option value="Physics">فيزياء</option>
+            <option value="Chemistry">كيمياء</option>
+            <option value="Biology">أحياء</option>
+        </select>
+        
+        <label for="teacherSelect">اختيار المعلم:</label>
+        <select id="teacherSelect">
+            <option value="">اختر معلمًا</option>
+            <!-- خيارات المعلمين ستضاف هنا ديناميكياً -->
+        </select>
+        
+        <button onclick="registerStudent()">تسجيل</button>
+
+        <div class="gender-icon" id="genderIcon">
+            <!-- أيقونة الجنس ستظهر هنا -->
         </div>
-        <a href="SS.HTML" class="btn-register">للتسجيل</a>
     </div>
 
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAhqwNudIwG1ffXjW3Yu_eXJY4DM59Q08s",
-            authDomain: "ease-58946.firebaseapp.com",
-            projectId: "ease-58946",
-            storageBucket: "ease-58946.appspot.com",
-            messagingSenderId: "797793182882",
-            appId: "1:797793182882:web:357e579fc4aa3b35d823fb",
-            measurementId: "G-ELBZ2MBLCC"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        function loadTeachers() {
+            const teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+            const teacherSelect = document.getElementById('teacherSelect');
+            teacherSelect.innerHTML = '<option value="">اختر معلمًا</option>'; // تنظيف خيارات المعلمين
 
-        // Function to register student
-        async function registerStudent(name, gender, subject, teacher) {
-            try {
-                if (name && gender && subject && teacher) {
-                    const studentsSnapshot = await db.collection('students').where('name', '==', name).get();
-                    if (studentsSnapshot.empty) {
-                        await db.collection('students').add({
-                            name: name,
-                            gender: gender,
-                            subject: subject,
-                            teacher: teacher
-                        });
-                        alert('تم تسجيل الطالب بنجاح');
-                    } else {
-                        alert('الطالب مسجل بالفعل');
-                    }
+            teachers.forEach(teacher => {
+                const option = document.createElement('option');
+                option.value = teacher.name;
+                option.textContent = teacher.name;
+                teacherSelect.appendChild(option);
+            });
+        }
+
+        function registerStudent() {
+            const name = document.getElementById('studentName').value;
+            const gender = document.getElementById('genderSelect').value;
+            const subject = document.getElementById('subjectSelect').value;
+            const teacher = document.getElementById('teacherSelect').value;
+            
+            if (name && gender && subject && teacher) {
+                let students = JSON.parse(localStorage.getItem('students')) || [];
+                if (!students.some(student => student.name === name)) {
+                    students.push({ name, gender, subject, teacher });
+                    localStorage.setItem('students', JSON.stringify(students));
+                    alert('تم تسجيل الطالب بنجاح');
                 } else {
-                    alert('يرجى إدخال جميع المعلومات');
+                    alert('الطالب مسجل بالفعل');
                 }
-            } catch (error) {
-                alert('حدث خطأ أثناء تسجيل الطالب');
+            } else {
+                alert('يرجى إدخال جميع المعلومات');
+            }
+            updateGenderIcon(gender);
+        }
+
+        function updateGenderIcon(gender) {
+            const genderIcon = document.getElementById('genderIcon');
+            genderIcon.innerHTML = ''; // تنظيف الأيقونة السابقة
+            if (gender === 'male') {
+                genderIcon.innerHTML = '<img src="male-icon.png" alt="ذكر">';
+            } else if (gender === 'female') {
+                genderIcon.innerHTML = '<img src="female-icon.png" alt="أنثى">';
             }
         }
 
-        // Example usage
-        // registerStudent('محمد', 'male', 'Math', 'أستاذ أحمد');
+        window.onload = loadTeachers;
     </script>
 </body>
 </html>

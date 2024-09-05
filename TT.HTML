@@ -11,19 +11,20 @@
             font-family: Arial, sans-serif;
             direction: rtl;
             background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .container {
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 60%;
-            max-width: 800px;
+            width: 80%;
+            max-width: 1200px;
             padding: 20px;
+            margin: 20px;
             text-align: center;
         }
         input[type="text"], select {
@@ -36,7 +37,7 @@
         }
         button {
             padding: 10px;
-            background-color: #4CAF50;
+            background-color: #4000ff;
             color: white;
             border: none;
             border-radius: 5px;
@@ -45,15 +46,29 @@
             margin: 10px;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #3000cc;
+        }
+        .gender-icon {
+            margin-top: 20px;
+        }
+        .gender-icon img {
+            width: 50px;
+            height: 50px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>تسجيل المعلم</h1>
-        <label for="teacherName">الاسم:</label>
-        <input type="text" id="teacherName" placeholder="أدخل اسم المعلم">
+        <h1>تسجيل الطالب</h1>
+        <label for="studentName">الاسم:</label>
+        <input type="text" id="studentName" placeholder="أدخل اسم الطالب">
+        
+        <label for="genderSelect">الجنس:</label>
+        <select id="genderSelect" onchange="updateGenderIcon()">
+            <option value="">اختر الجنس</option>
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+        </select>
         
         <label for="subjectSelect">اختيار المادة الدراسية:</label>
         <select id="subjectSelect">
@@ -67,8 +82,17 @@
             <option value="Biology">أحياء</option>
         </select>
         
-        <button onclick="saveTeacher()">حفظ المعلومات</button>
-        <button onclick="saveAndRedirect()">حفظ وتبديل الصفحة</button>
+        <label for="teacherSelect">اختيار المعلم:</label>
+        <select id="teacherSelect">
+            <option value="">اختر معلمًا</option>
+            <!-- خيارات المعلمين ستضاف هنا ديناميكياً -->
+        </select>
+        
+        <button onclick="registerStudent()">تسجيل</button>
+
+        <div class="gender-icon" id="genderIcon">
+            <!-- أيقونة الجنس ستظهر هنا -->
+        </div>
     </div>
 
     <script>
@@ -87,36 +111,61 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        async function checkExistingTeacher() {
+        async function loadTeachers() {
             const teachersSnapshot = await db.collection('teachers').get();
-            if (!teachersSnapshot.empty) {
-                window.location.href = 'Tindex.html'; // Redirect if data exists
-            }
+            const teacherSelect = document.getElementById('teacherSelect');
+            teacherSelect.innerHTML = '<option value="">اختر معلمًا</option>'; // تنظيف خيارات المعلمين
+
+            teachersSnapshot.forEach(doc => {
+                const teacher = doc.data();
+                const option = document.createElement('option');
+                option.value = teacher.name;
+                option.textContent = teacher.name;
+                teacherSelect.appendChild(option);
+            });
         }
 
-        async function saveTeacher() {
-            const name = document.getElementById('teacherName').value;
+        async function registerStudent() {
+            const name = document.getElementById('studentName').value;
+            const gender = document.getElementById('genderSelect').value;
             const subject = document.getElementById('subjectSelect').value;
+            const teacher = document.getElementById('teacherSelect').value;
             
-            if (name && subject) {
-                const existingTeacher = await db.collection('teachers').where('name', '==', name).get();
-                if (existingTeacher.empty) {
-                    await db.collection('teachers').add({ name, subject });
-                    alert('تم حفظ المعلومات بنجاح');
-                } else {
-                    alert('المعلم مسجل بالفعل');
+            if (name && gender && subject && teacher) {
+                try {
+                    const studentsSnapshot = await db.collection('students').where('name', '==', name).get();
+                    if (studentsSnapshot.empty) {
+                        await db.collection('students').add({
+                            name: name,
+                            gender: gender,
+                            subject: subject,
+                            teacher: teacher
+                        });
+                        alert('تم تسجيل الطالب بنجاح');
+                    } else {
+                        alert('الطالب مسجل بالفعل');
+                    }
+                } catch (error) {
+                    console.error("Error adding document: ", error);
+                    alert('حدث خطأ أثناء تسجيل الطالب');
                 }
             } else {
                 alert('يرجى إدخال جميع المعلومات');
             }
         }
 
-        function saveAndRedirect() {
-            saveTeacher(); // Save information
-            window.location.href = 'Tindex.html'; // Redirect to Tindex.html
+        function updateGenderIcon() {
+            const gender = document.getElementById('genderSelect').value;
+            const genderIcon = document.getElementById('genderIcon');
+            genderIcon.innerHTML = ''; // تنظيف الأيقونة السابقة
+            if (gender === 'male') {
+                genderIcon.innerHTML = '<img src="male-icon.png" alt="ذكر">';
+            } else if (gender === 'female') {
+                genderIcon.innerHTML = '<img src="female-icon.png" alt="أنثى">';
+            }
         }
 
-        window.onload = checkExistingTeacher; // Check on page load
+        window.onload = loadTeachers; // تحميل قائمة المعلمين عند تحميل الصفحة
     </script>
 </body>
 </html>

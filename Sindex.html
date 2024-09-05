@@ -3,134 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ease Platform - Student</title>
+    <title> Ease Platform</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button with Images</title>
     <style>
-        body {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            font-family: Arial, sans-serif;
+                body {
+            background: linear-gradient(to right, #7300ff, #c096f3);
+            
         }
         .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; 
+            gap: 20px; 
+            width: 100%; 
         }
-        .card {
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
+
+        .button-with-image {
+            display: flex;
+            flex-direction: row; 
+            align-items: center; 
+            width: 100%; 
+            gap: 10px; 
         }
-        .card:hover {
-            transform: scale(1.05);
-        }
-        .card img {
-            border-bottom: 2px solid #eee;
-        }
-        .card-body {
-            background: #fff;
-            padding: 20px;
-        }
+
         .my-button {
-            background-color: #2575fc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
+            background-color: #4000ff; 
+            color: white; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold; 
+            transition: background-color 0.3s ease, transform 0.3s ease; 
         }
+
         .my-button:hover {
-            background-color: #1a64d1;
+            background-color: #4000ff; 
+            transform: scale(1.05); 
         }
-        .btn-register {
-            background-color: #ff5722;
-            color: white;
-            border-radius: 5px;
-            padding: 10px 20px;
-            text-decoration: none;
-            font-size: 18px;
-            position: fixed;
-            top: 10px;
-            right: 10px;
+
+        .my-button:active {
+            background-color: #4000ff; 
+            transform: scale(1); 
         }
-        .btn-register:hover {
-            background-color: #e64a19;
+
+        .my-image {
+            width: 100%; 
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px; 
+        }
+
+        a {
+            text-decoration: none; 
+            color: inherit; 
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <img src="the_pictures_and_video/the_messages.jpg" alt="Messages" class="card-img-top">
-                    <div class="card-body">
-                        <a href="input_iname_of_s.html" target="_blank">
-                            <button class="my-button">الرسائل</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <img src="the_pictures_and_video/AI_IMAGE.jpg" alt="AI Tool" class="card-img-top">
-                    <div class="card-body">
-                        <a href="https://ease-platform.streamlit.app/" target="_blank">
-                            <button class="my-button">AI Tool</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div class="button-with-image">
+            <a href="https://ease-platform.streamlit.app/" target="_blank">
+                <button class="my-button">AI Tools</button>
+                <img src="the pictures & video\AI IMEGE .jpg" alt="Image 3" class="my-image">
+            </a>
         </div>
-        <a href="SS.HTML" class="btn-register">للتسجيل</a>
     </div>
-
-    <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAhqwNudIwG1ffXjW3Yu_eXJY4DM59Q08s",
-            authDomain: "ease-58946.firebaseapp.com",
-            projectId: "ease-58946",
-            storageBucket: "ease-58946.appspot.com",
-            messagingSenderId: "797793182882",
-            appId: "1:797793182882:web:357e579fc4aa3b35d823fb",
-            measurementId: "G-ELBZ2MBLCC"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // Function to register student
-        async function registerStudent(name, gender, subject, teacher) {
-            try {
-                if (name && gender && subject && teacher) {
-                    const studentsSnapshot = await db.collection('students').where('name', '==', name).get();
-                    if (studentsSnapshot.empty) {
-                        await db.collection('students').add({
-                            name: name,
-                            gender: gender,
-                            subject: subject,
-                            teacher: teacher
-                        });
-                        alert('تم تسجيل الطالب بنجاح');
-                    } else {
-                        alert('الطالب مسجل بالفعل');
-                    }
-                } else {
-                    alert('يرجى إدخال جميع المعلومات');
-                }
-            } catch (error) {
-                alert('حدث خطأ أثناء تسجيل الطالب');
-            }
-        }
-
-        // Example usage
-        // registerStudent('محمد', 'male', 'Math', 'أستاذ أحمد');
-    </script>
+    <div class="container">
+        <div class="button-with-image">
+            <a href="input iname of s (1).html" target="_blank">
+                <button class="my-button">الرسائل</button>
+                <img src="the pictures & video\the masseages .jpg" alt="Image 3" class="my-image">
+            </a>
+        </div>
+    </div>
+    
+    <a href="SS.HTML" class="btn btn-primary btn-lg" style="position: absolute; top: 0; right: 0; margin: 10px; padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">للتسجيل</a>
 </body>
 </html>
 

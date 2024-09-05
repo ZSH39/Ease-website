@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Ease Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 1200px;
+            padding: 20px;
+            margin: 20px;
+            text-align: center;
+        }
+        .students-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        .students-list ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .students-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .students-list li:last-child {
+            border-bottom: none;
+        }
+        button {
+            padding: 10px;
+            background-color: #4000ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #4000ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>عرض الرسائل</h1>
+
+        <div class="students-list">
+            <h2>قائمة الطلاب</h2>
+            <select id="studentSelect" onchange="displayMessages()">
+                <option value="">اختر طالباً</option>
+                <!-- خيارات الطلاب ستضاف هنا ديناميكياً -->
+            </select>
+        </div>
+
+        <div id="messagesDisplay">
+            <!-- الرسائل ستعرض هنا -->
+        </div>
+
+        <button onclick="goBack()">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <script>
+        function loadStudents() {
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+            const studentSelect = document.getElementById('studentSelect');
+            studentSelect.innerHTML = '<option value="">اختر طالباً</option>'; // تنظيف خيارات الطلاب
+
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.name;
+                option.textContent = student.name;
+                studentSelect.appendChild(option);
+            });
+        }
+
+        function displayMessages() {
+            const student = document.getElementById('studentSelect').value;
+            const messagesDisplay = document.getElementById('messagesDisplay');
+
+            if (student) {
+                const messages = JSON.parse(localStorage.getItem('messages')) || {};
+                const studentMessages = messages[student] || [];
+                
+                messagesDisplay.innerHTML = `<h2>رسائل ${student}</h2>`;
+                
+                if (studentMessages.length > 0) {
+                    const ul = document.createElement('ul');
+                    studentMessages.forEach(msg => {
+                        const li = document.createElement('li');
+                        li.textContent = msg;
+                        ul.appendChild(li);
+                    });
+                    messagesDisplay.appendChild(ul);
+                } else {
+                    messagesDisplay.innerHTML += '<p>لا توجد رسائل لهذا الطالب.</p>';
+                }
+            } else {
+                messagesDisplay.innerHTML = '<p>يرجى اختيار طالب لعرض الرسائل.</p>';
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'introdection.html'; // العودة إلى الصفحة الرئيسية
+        }
+
+        window.onload = loadStudents;
+    </script>
+</body>
+</html>

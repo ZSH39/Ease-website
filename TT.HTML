@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Ease Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 60%;
+            max-width: 800px;
+            padding: 20px;
+            text-align: center;
+        }
+        input[type="text"], select {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>تسجيل المعلم</h1>
+        <label for="teacherName">الاسم:</label>
+        <input type="text" id="teacherName" placeholder="أدخل اسم المعلم">
+        
+        <label for="subjectSelect">اختيار المادة الدراسية:</label>
+        <select id="subjectSelect">
+            <option value="">اختر المادة</option>
+            <option value="Math">رياضيات</option>
+            <option value="Science">علوم</option>
+            <option value="History">تاريخ</option>
+            <option value="English">إنجليزي</option>
+            <option value="Physics">فيزياء</option>
+            <option value="Chemistry">كيمياء</option>
+            <option value="Biology">أحياء</option>
+        </select>
+        
+        <button onclick="saveTeacher()">حفظ المعلومات</button>
+        <button onclick="saveAndRedirect()">حفظ وتبديل الصفحة</button>
+    </div>
+
+    <script>
+        function checkExistingTeacher() {
+            const teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+            if (teachers.length > 0) {
+                window.location.href = 'Tindex.html'; // Redirect if data exists
+            }
+        }
+
+        function saveTeacher() {
+            const name = document.getElementById('teacherName').value;
+            const subject = document.getElementById('subjectSelect').value;
+            
+            if (name && subject) {
+                let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+                teachers.push({ name, subject });
+                localStorage.setItem('teachers', JSON.stringify(teachers));
+                alert('تم حفظ المعلومات بنجاح');
+            } else {
+                alert('يرجى إدخال جميع المعلومات');
+            }
+        }
+
+        function saveAndRedirect() {
+            saveTeacher(); // Save information
+            window.location.href = 'Tindex.html'; // Redirect to Tindex.html
+        }
+
+        window.onload = checkExistingTeacher; // Check on page load
+    </script>
+</body>
+</html>
+

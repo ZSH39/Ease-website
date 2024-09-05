@@ -1,0 +1,175 @@
+<!--تم الغاء الفكرة التالية بعتبار كثرة الافكار ارجو عدم ربط هذه الملف باي ملف اخر لانه يتبع لصفحة محذوفة 
+-->
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Ease Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 800px;
+            padding: 20px;
+            margin: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px;
+            background-color: #4000ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color:#4000ff;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .assignments-list {
+            margin-top: 20px;
+            text-align: left;
+            width: 100%;
+        }
+        .assignments-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .assignments-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        select {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .home-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="introdection.html" class="home-button">العودة إلى الصفحة الرئيسية</a>
+        <h1>صفحة الطالب</h1>
+       
+
+        <div class="form-group">
+            <h2>اختر طالباً لعرض واجباته</h2>
+            <select id="studentSelect" onchange="displayAssignments()">
+                <option value="">اختر طالباً</option>
+                
+            </select>
+        </div>
+
+        <div class="assignments-list">
+            <h2>الواجبات المتاحة</h2>
+            <ul id="assignmentsList">
+                <!-- سيتم عرض الواجبات هنا -->
+            </ul>
+        </div>
+
+        <div class="form-group">
+            <h2>إرفاق واجب</h2>
+            <input type="file" id="fileUpload">
+            <button onclick="submitAssignment()">تسليم الواجب</button>
+        </div>
+    </div>
+
+    <script>
+        function loadStudents() {
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+            const studentSelect = document.getElementById('studentSelect');
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.name;
+                option.textContent = student.name;
+                studentSelect.appendChild(option);
+            });
+        }
+
+        function displayAssignments() {
+            const student = document.getElementById('studentSelect').value;
+            const assignmentsList = document.getElementById('assignmentsList');
+            assignmentsList.innerHTML = '';
+
+            if (student) {
+                const uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || {};
+                const assignments = uploadedFiles[student] || [];
+
+                if (assignments.length > 0) {
+                    assignments.forEach(assignment => {
+                        const listItem = document.createElement('li');
+                        
+                        // إنشاء رابط لتحميل الواجب
+                        const assignmentLink = document.createElement('a');
+                        assignmentLink.href = `path/to/assignments/${assignment}`; // ضع هنا مسار الواجبات الفعلي
+                        assignmentLink.textContent = assignment;
+                        assignmentLink.setAttribute('download', assignment); // للسماح بتحميل الملف
+                        listItem.appendChild(assignmentLink);
+
+                        assignmentsList.appendChild(listItem);
+                    });
+                } else {
+                    assignmentsList.innerHTML = '<li>لا توجد واجبات متاحة</li>';
+                }
+            } else {
+                assignmentsList.innerHTML = '<li>يرجى اختيار طالب لعرض واجباته</li>';
+            }
+        }
+
+        function submitAssignment() {
+            const student = document.getElementById('studentSelect').value;
+            const file = document.getElementById('fileUpload').files[0];
+
+            if (student && file) {
+                const submittedAssignments = JSON.parse(localStorage.getItem('submittedAssignments')) || {};
+                if (!submittedAssignments[student]) {
+                    submittedAssignments[student] = [];
+                }
+                submittedAssignments[student].push(file.name);
+                localStorage.setItem('submittedAssignments', JSON.stringify(submittedAssignments));
+
+                alert('تم تسليم الواجب بنجاح');
+            } else {
+                alert('يرجى اختيار طالب وملف لتسليمه');
+            }
+        }
+    </script>
+</body>
+</html>

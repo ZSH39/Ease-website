@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Ease Platform</title>
+    <title>Ease Platform</title>
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -70,22 +72,40 @@
     </div>
 
     <script>
-        function checkExistingTeacher() {
-            const teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-            if (teachers.length > 0) {
+        // إعداد Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAhqwNudIwG1ffXjW3Yu_eXJY4DM59Q08s",
+            authDomain: "ease-58946.firebaseapp.com",
+            projectId: "ease-58946",
+            storageBucket: "ease-58946.appspot.com",
+            messagingSenderId: "797793182882",
+            appId: "1:797793182882:web:357e579fc4aa3b35d823fb",
+            measurementId: "G-ELBZ2MBLCC"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        async function checkExistingTeacher() {
+            const teachersSnapshot = await db.collection('teachers').get();
+            if (!teachersSnapshot.empty) {
                 window.location.href = 'Tindex.html'; // Redirect if data exists
             }
         }
 
-        function saveTeacher() {
+        async function saveTeacher() {
             const name = document.getElementById('teacherName').value;
             const subject = document.getElementById('subjectSelect').value;
             
             if (name && subject) {
-                let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-                teachers.push({ name, subject });
-                localStorage.setItem('teachers', JSON.stringify(teachers));
-                alert('تم حفظ المعلومات بنجاح');
+                const existingTeacher = await db.collection('teachers').where('name', '==', name).get();
+                if (existingTeacher.empty) {
+                    await db.collection('teachers').add({ name, subject });
+                    alert('تم حفظ المعلومات بنجاح');
+                } else {
+                    alert('المعلم مسجل بالفعل');
+                }
             } else {
                 alert('يرجى إدخال جميع المعلومات');
             }

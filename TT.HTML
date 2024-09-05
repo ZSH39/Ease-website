@@ -3,28 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ease Platform</title>
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
+    <title> Ease Platform</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             direction: rtl;
             background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            height: 100vh;
+            margin: 0;
         }
         .container {
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 80%;
-            max-width: 1200px;
+            width: 60%;
+            max-width: 800px;
             padding: 20px;
-            margin: 20px;
             text-align: center;
         }
         input[type="text"], select {
@@ -37,7 +34,7 @@
         }
         button {
             padding: 10px;
-            background-color: #4000ff;
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
@@ -46,29 +43,15 @@
             margin: 10px;
         }
         button:hover {
-            background-color: #3000cc;
-        }
-        .gender-icon {
-            margin-top: 20px;
-        }
-        .gender-icon img {
-            width: 50px;
-            height: 50px;
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>تسجيل الطالب</h1>
-        <label for="studentName">الاسم:</label>
-        <input type="text" id="studentName" placeholder="أدخل اسم الطالب">
-        
-        <label for="genderSelect">الجنس:</label>
-        <select id="genderSelect" onchange="updateGenderIcon()">
-            <option value="">اختر الجنس</option>
-            <option value="male">ذكر</option>
-            <option value="female">أنثى</option>
-        </select>
+        <h1>تسجيل المعلم</h1>
+        <label for="teacherName">الاسم:</label>
+        <input type="text" id="teacherName" placeholder="أدخل اسم المعلم">
         
         <label for="subjectSelect">اختيار المادة الدراسية:</label>
         <select id="subjectSelect">
@@ -82,90 +65,38 @@
             <option value="Biology">أحياء</option>
         </select>
         
-        <label for="teacherSelect">اختيار المعلم:</label>
-        <select id="teacherSelect">
-            <option value="">اختر معلمًا</option>
-            <!-- خيارات المعلمين ستضاف هنا ديناميكياً -->
-        </select>
-        
-        <button onclick="registerStudent()">تسجيل</button>
-
-        <div class="gender-icon" id="genderIcon">
-            <!-- أيقونة الجنس ستظهر هنا -->
-        </div>
+        <button onclick="saveTeacher()">حفظ المعلومات</button>
+        <button onclick="saveAndRedirect()">حفظ وتبديل الصفحة</button>
     </div>
 
     <script>
-        // إعداد Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAhqwNudIwG1ffXjW3Yu_eXJY4DM59Q08s",
-            authDomain: "ease-58946.firebaseapp.com",
-            projectId: "ease-58946",
-            storageBucket: "ease-58946.appspot.com",
-            messagingSenderId: "797793182882",
-            appId: "1:797793182882:web:357e579fc4aa3b35d823fb",
-            measurementId: "G-ELBZ2MBLCC"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        async function loadTeachers() {
-            const teachersSnapshot = await db.collection('teachers').get();
-            const teacherSelect = document.getElementById('teacherSelect');
-            teacherSelect.innerHTML = '<option value="">اختر معلمًا</option>'; // تنظيف خيارات المعلمين
-
-            teachersSnapshot.forEach(doc => {
-                const teacher = doc.data();
-                const option = document.createElement('option');
-                option.value = teacher.name;
-                option.textContent = teacher.name;
-                teacherSelect.appendChild(option);
-            });
+        function checkExistingTeacher() {
+            const teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+            if (teachers.length > 0) {
+                window.location.href = 'Tindex.html'; // Redirect if data exists
+            }
         }
 
-        async function registerStudent() {
-            const name = document.getElementById('studentName').value;
-            const gender = document.getElementById('genderSelect').value;
+        function saveTeacher() {
+            const name = document.getElementById('teacherName').value;
             const subject = document.getElementById('subjectSelect').value;
-            const teacher = document.getElementById('teacherSelect').value;
             
-            if (name && gender && subject && teacher) {
-                try {
-                    const studentsSnapshot = await db.collection('students').where('name', '==', name).get();
-                    if (studentsSnapshot.empty) {
-                        await db.collection('students').add({
-                            name: name,
-                            gender: gender,
-                            subject: subject,
-                            teacher: teacher
-                        });
-                        alert('تم تسجيل الطالب بنجاح');
-                    } else {
-                        alert('الطالب مسجل بالفعل');
-                    }
-                } catch (error) {
-                    console.error("Error adding document: ", error);
-                    alert('حدث خطأ أثناء تسجيل الطالب');
-                }
+            if (name && subject) {
+                let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+                teachers.push({ name, subject });
+                localStorage.setItem('teachers', JSON.stringify(teachers));
+                alert('تم حفظ المعلومات بنجاح');
             } else {
                 alert('يرجى إدخال جميع المعلومات');
             }
         }
 
-        function updateGenderIcon() {
-            const gender = document.getElementById('genderSelect').value;
-            const genderIcon = document.getElementById('genderIcon');
-            genderIcon.innerHTML = ''; // تنظيف الأيقونة السابقة
-            if (gender === 'male') {
-                genderIcon.innerHTML = '<img src="male-icon.png" alt="ذكر">';
-            } else if (gender === 'female') {
-                genderIcon.innerHTML = '<img src="female-icon.png" alt="أنثى">';
-            }
+        function saveAndRedirect() {
+            saveTeacher(); // Save information
+            window.location.href = 'Tindex.html'; // Redirect to Tindex.html
         }
 
-        window.onload = loadTeachers; // تحميل قائمة المعلمين عند تحميل الصفحة
+        window.onload = checkExistingTeacher; // Check on page load
     </script>
 </body>
 </html>

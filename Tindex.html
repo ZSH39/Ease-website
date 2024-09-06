@@ -108,8 +108,6 @@
             <button onclick="sendMessage()">إرسال رسالة</button>
         </div>
 
-        
-
         <button onclick="saveAndRedirect()">حفظ وتبديل الصفحة</button>
     </div>
 
@@ -152,51 +150,15 @@
             }
         }
 
-        function uploadFiles() {
-            const files = document.getElementById('fileUpload').files;
-            const student = document.getElementById('studentSelect').value;
-            if (files.length > 0 && student) {
-                // تخزين أسماء الملفات في localStorage
-                const fileNames = Array.from(files).map(file => file.name);
-                const uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || {};
-                if (!uploadedFiles[student]) {
-                    uploadedFiles[student] = [];
-                }
-                uploadedFiles[student] = uploadedFiles[student].concat(fileNames);
-                localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
-                alert('تم تحميل الملفات بنجاح');
-            } else {
-                alert('يرجى اختيار طالب وملفات لتحميلها');
-            }
-        }
-
-        function addLink() {
-            const link = document.getElementById('linkInput').value;
-            const student = document.getElementById('studentSelect').value;
-            if (link && student) {
-                // تخزين الرابط في localStorage
-                const links = JSON.parse(localStorage.getItem('links')) || {};
-                if (!links[student]) {
-                    links[student] = [];
-                }
-                links[student].push(link);
-                localStorage.setItem('links', JSON.stringify(links));
-
-                alert('تم إضافة الرابط بنجاح');
-                document.getElementById('linkInput').value = ''; // مسح الرابط
-            } else {
-                alert('يرجى اختيار طالب وإدخال الرابط');
-            }
-        }
-
         function saveAndRedirect() {
             // حفظ البيانات إذا لزم الأمر
-            window.location.href = 'Tindex.html'; // Redirect to Tindex.html
+            window.location.href = 'TT.html'; // Redirect to TT.html
         }
 
         window.onload = loadStudents;
     </script>
-     <a href="TT.HTML" class="btn btn-primary btn-lg" style="position: absolute; top: 0; right: 0; margin: 10px; padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">للتسجيل</a>
+    
+    <a href="TT.html" class="btn btn-primary btn-lg" style="position: absolute; top: 0; right: 0; margin: 10px; padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">للتسجيل</a>
 </body>
 </html>
 

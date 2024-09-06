@@ -68,11 +68,6 @@
             <option value="female">أنثى</option>
         </select>
 
-        <label for="teacherSelect">اختيار المعلم:</label>
-        <select id="teacherSelect">
-            <option value="">اختر معلمًا</option>
-            <!-- خيارات المعلمين ستضاف هنا ديناميكياً -->
-        </select>
         
         <button onclick="registerStudent()">تسجيل</button>
 
@@ -100,10 +95,10 @@
             const gender = document.getElementById('genderSelect').value;
             const teacher = document.getElementById('teacherSelect').value;
             
-            if (name && gender && teacher) {
+            if (name && gender) {
                 let students = JSON.parse(localStorage.getItem('students')) || [];
                 if (!students.some(student => student.name === name)) {
-                    students.push({ name, gender, teacher });
+                    students.push({ name, gender});
                     localStorage.setItem('students', JSON.stringify(students));
                     alert('تم تسجيل الطالب بنجاح');
                 } else {

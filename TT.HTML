@@ -24,7 +24,7 @@
             padding: 20px;
             text-align: center;
         }
-        input[type="text"], select {
+        input[type="text"] {
             width: 80%;
             padding: 10px;
             margin-bottom: 20px;
@@ -53,19 +53,6 @@
         <label for="teacherName">الاسم:</label>
         <input type="text" id="teacherName" placeholder="أدخل اسم المعلم">
         
-        <label for="subjectSelect">اختيار المادة الدراسية:</label>
-        <select id="subjectSelect">
-            <option value="">اختر المادة</option>
-            <option value="Math">رياضيات</option>
-            <option value="Science">علوم</option>
-            <option value="History">تاريخ</option>
-            <option value="English">إنجليزي</option>
-            <option value="Physics">فيزياء</option>
-            <option value="Chemistry">كيمياء</option>
-            <option value="Biology">أحياء</option>
-        </select>
-        
-        <button onclick="saveTeacher()">حفظ المعلومات</button>
         <button onclick="saveAndRedirect()">حفظ وتبديل الصفحة</button>
     </div>
 
@@ -79,11 +66,10 @@
 
         function saveTeacher() {
             const name = document.getElementById('teacherName').value;
-            const subject = document.getElementById('subjectSelect').value;
             
-            if (name && subject) {
+            if (name) {
                 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-                teachers.push({ name, subject });
+                teachers.push({ name });
                 localStorage.setItem('teachers', JSON.stringify(teachers));
                 alert('تم حفظ المعلومات بنجاح');
             } else {

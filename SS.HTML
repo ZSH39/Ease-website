@@ -1,59 +1,3 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ease Platform</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            direction: rtl;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 80%;
-            max-width: 1200px;
-            padding: 20px;
-            margin: 20px;
-            text-align: center;
-        }
-        input[type="text"], select {
-            width: 80%;
-            padding: 10px;
-            margin-bottom: 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            padding: 10px;
-            background-color: #4000ff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 10px;
-        }
-        button:hover {
-            background-color: #4000ff;
-        }
-        .gender-icon {
-            margin-top: 20px;
-        }
-        .gender-icon img {
-            width: 50px;
-            height: 50px;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -67,26 +11,36 @@
             <option value="male">ذكر</option>
             <option value="female">أنثى</option>
         </select>
-
-        <a href="Sindex.html">
+        
+        <label for="subjectSelect">اختيار المادة الدراسية:</label>
+        <select id="subjectSelect">
+            <option value="">اختر المادة</option>
+            <option value="Math">رياضيات</option>
+            <option value="Science">علوم</option>
+            <option value="History">تاريخ</option>
+            <option value="English">إنجليزي</option>
+            <option value="Physics">فيزياء</option>
+            <option value="Chemistry">كيمياء</option>
+            <option value="Biology">أحياء</option>
+        </select>
+        
         <button onclick="registerStudent()">تسجيل</button>
-</a>
+
         <div class="gender-icon" id="genderIcon">
             <!-- أيقونة الجنس ستظهر هنا -->
         </div>
     </div>
 
     <script>
-
         function registerStudent() {
             const name = document.getElementById('studentName').value;
             const gender = document.getElementById('genderSelect').value;
-            const teacher = document.getElementById('teacherSelect').value;
+            const subject = document.getElementById('subjectSelect').value;
             
-            if (name && gender) {
+            if (name && gender && subject) {
                 let students = JSON.parse(localStorage.getItem('students')) || [];
                 if (!students.some(student => student.name === name)) {
-                    students.push({ name, gender});
+                    students.push({ name, gender, subject });
                     localStorage.setItem('students', JSON.stringify(students));
                     alert('تم تسجيل الطالب بنجاح');
                 } else {
@@ -103,4 +57,11 @@
             genderIcon.innerHTML = ''; // تنظيف الأيقونة السابقة
             if (gender === 'male') {
                 genderIcon.innerHTML = '<img src="male-icon.png" alt="ذكر">';
-           
+            } else if (gender === 'female') {
+                genderIcon.innerHTML = '<img src="female-icon.png" alt="أنثى">';
+            }
+        }
+    </script>
+</body>
+</html>
+

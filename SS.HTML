@@ -77,18 +77,6 @@
     </div>
 
     <script>
-        function loadTeachers() {
-            const teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-            const teacherSelect = document.getElementById('teacherSelect');
-            teacherSelect.innerHTML = '<option value="">اختر معلمًا</option>'; // تنظيف خيارات المعلمين
-
-            teachers.forEach(teacher => {
-                const option = document.createElement('option');
-                option.value = teacher.name;
-                option.textContent = teacher.name;
-                teacherSelect.appendChild(option);
-            });
-        }
 
         function registerStudent() {
             const name = document.getElementById('studentName').value;

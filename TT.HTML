@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Ease Platform</title>
+    <title>صفحة المعلم</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -53,10 +53,20 @@
         <label for="teacherName">الاسم:</label>
         <input type="text" id="teacherName" placeholder="أدخل اسم المعلم">
         
-     
-      <a href="Tindex.html">
+        <label for="subjectSelect">اختيار المادة الدراسية:</label>
+        <select id="subjectSelect">
+            <option value="">اختر المادة</option>
+            <option value="Math">رياضيات</option>
+            <option value="Science">علوم</option>
+            <option value="History">تاريخ</option>
+            <option value="English">إنجليزي</option>
+            <option value="Physics">فيزياء</option>
+            <option value="Chemistry">كيمياء</option>
+            <option value="Biology">أحياء</option>
+        </select>
+        
+        <button onclick="saveTeacher()">حفظ المعلومات</button>
         <button onclick="saveAndRedirect()">حفظ وتبديل الصفحة</button>
-</a>
     </div>
 
     <script>
